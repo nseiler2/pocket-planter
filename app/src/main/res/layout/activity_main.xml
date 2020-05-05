@@ -33,9 +33,10 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+
                 <EditText
                     android:id="@+id/editText"
-                    android:layout_width="wrap_content"
+                    android:layout_width="286dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="60dp"
                     android:layout_marginLeft="60dp"
@@ -45,46 +46,16 @@
                     android:hint="@string/enter_a_plant_name"
                     android:inputType="text" />
 
-                <Switch
-                    android:id="@+id/switch1"
-                    android:layout_width="184dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/drought_tolerance" />
-
-                <Switch
-                    android:id="@+id/switch2"
-                    android:layout_width="140dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/root_depth" />
-
-                <Switch
-                    android:id="@+id/switch3"
-                    android:layout_width="124dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/ph_level" />
-
-                <Switch
-                    android:id="@+id/switch4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/growth_rate" />
-
-                <Switch
-                    android:id="@+id/switch5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/precipitation_minimum" />
-
                 <Button
                     android:id="@+id/button"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@android:string/search_go" />
 
                 <ProgressBar
                     android:id="@+id/progressBar"
                     style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="87dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <TextView

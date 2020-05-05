@@ -7,4 +7,8 @@
     <string name="growth_rate">Growth rate</string>
     <string name="precipitation_minimum">Precipitation minimum</string>
     <string name="search_results">Search Results</string>
+    <string name="Class">Class (Plant)</string>
+    <string name="Genus" />
+    <string name="Family" />
+    <string name="Division" />
 </resources>

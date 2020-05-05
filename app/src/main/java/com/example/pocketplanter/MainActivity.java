@@ -1,7 +1,9 @@
 package com.example.pocketplanter;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +12,8 @@ import android.widget.Switch;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,6 +60,15 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * this is modified code from https://www.androidauthority.com/use-remote-web-api-within-android-app-617869/ to help figure out how to work the web API
+     * not really doing what we want it to, I don't know how to parse the results with StringBuilder
+     * replace this with Volley???
+     * first search the species API parse results and find main_species_ID
+     * use main_species_ID to search under trefle.io/api/plantsID?token=API_KEY
+     * parse those results and return the plant's Class, Division, Family, and Genus
+     */
+
     class RetrieveFeedTask extends AsyncTask<Void, Void, String> {
         private Exception e;
 
@@ -64,21 +77,44 @@ public class MainActivity extends AppCompatActivity {
             results.setText("");
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         protected String doInBackground(Void... urls) {
             String plant = plantSearch.getText().toString();
             try {
-                URL url = null;
-                url = new URL(API_URL + "/api/species?q=" + plant + "&token=" + API_KEY);
+                URL url = new URL(API_URL + "/api/species?q=" + plant + "&token=" + API_KEY);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                // me trying stuff (didn't work)
+                //JSONArray array = new JSONArray(urlConnection.getInputStream());
+                //int mainSpeciesID = 0;
+                //for (int i = 0; i < array.length(); i++) {
+                //    JSONObject o = array.getJSONObject(i);
+                //    mainSpeciesID = o.getInt("main_species_id");
+                //}
+                //URL url2 = new URL(API_URL + "/api/plants" + mainSpeciesID + "?token="+ API_KEY);
+                //HttpURLConnection url2Connection = (HttpURLConnection) url2.openConnection();
+                //JSONArray array1 = new JSONArray(url2Connection.getInputStream());
+                //String lastUpdated = "it either didn't work or the page hasn't been updated";
+                //for (int i = 0; i < array1.length(); i++) {
+                //    JSONObject o = array1.getJSONObject(i);
+                //    lastUpdated = o.getString("last_update");
+                //}
+                //this is from android authority
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                 StringBuilder stringBuilder = new StringBuilder();
                 String line;
-                while ((line = bufferedReader.readLine()) != null) {
-                    stringBuilder.append(line).append("/n");
+                if ((line = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(line);
                 }
                 bufferedReader.close();
                 urlConnection.disconnect();
-                return stringBuilder.toString();
+
+                String jsongarbage = stringBuilder.toString();
+                int index = jsongarbage.indexOf("main_species_id");
+                return jsongarbage.substring(index + 17, index + 23);
+
+                //woohoo!! we get the mainID (sometimes) and now we can use that to do other cool stuff
+                // i should point out that trefle.io is kind of incomplete and there are a lot of null data points so I'm only going to try to pull the scientific name
+
             }
             catch(Exception e) {
                     Log.e("ERROR", e.getMessage(), e);
@@ -88,18 +124,22 @@ public class MainActivity extends AppCompatActivity {
 
         protected void onPostExecute(String response) {
             if(response == null) {
-                response = "There was a problem";
+                response = "there was a problem";
             }
             progressBar.setVisibility(View.GONE);
             Log.i("INFO", response);
-            int mainSpeciesID = 0;
-            try {
-                JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
-                mainSpeciesID = object.getInt("main_species_id");
+            /**
+             try {
+                JSONArray array = new JSONArray(response);
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject o = array.getJSONObject(i);
+                    mainSpeciesID = o.getInt("main_species_id");
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            results.setText(mainSpeciesID);
+             */
+            results.setText(response);
         }
     }
 }
