@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Pocket Planter</string>
+    <string name="drought_tolerance">Drought tolerance</string>
+    <string name="enter_a_plant_name">enter a plant name</string>
+    <string name="root_depth">Root depth</string>
+    <string name="ph_level">PH level</string>
+    <string name="growth_rate">Growth rate</string>
+    <string name="precipitation_minimum">Precipitation minimum</string>
+    <string name="search_results">Search Results</string>
 </resources>
