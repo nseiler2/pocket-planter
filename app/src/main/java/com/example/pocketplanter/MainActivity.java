@@ -2,6 +2,8 @@ package com.example.pocketplanter;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,7 +15,17 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
+import com.android.volley.Cache;
+import com.android.volley.Network;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.BasicNetwork;
+import com.android.volley.toolbox.DiskBasedCache;
+import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,11 +33,8 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.DatagramSocket;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,13 +42,51 @@ public class MainActivity extends AppCompatActivity {
     static final String API_URL = "https://trefle.io";
     EditText plantSearch;
     TextView results;
-    Switch drought;
-    Switch depth;
-    Switch ph;
-    Switch growth;
-    Switch precip;
     Button search;
     ProgressBar progressBar;
+
+    //volley attempt (Failed)
+    /**
+    public static class MySingleton {
+        private static MySingleton instance;
+        private RequestQueue requestQueue;
+        private Context ctx;
+
+        private MySingleton(Context context) {
+            ctx = context;
+            requestQueue = getRequestQueue();
+        }
+        public static synchronized MySingleton getInstance(Context context) {
+            if (instance == null) {
+                instance = new MySingleton(context);
+            }
+            return instance;
+        }
+
+        public RequestQueue getRequestQueue() {
+            if (requestQueue == null) {
+                requestQueue = Volley.newRequestQueue(ctx.getApplicationContext());
+            }
+            return requestQueue;
+        }
+        public <T> void addToRequestQueue(Request<T> req) {
+            getRequestQueue().add(req);
+        }
+    }
+    String plant = plantSearch.getText().toString();
+    String url = "http://trefle.io/api/species?q=" + plant + "&token=" + API_KEY;
+    JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+        @Override
+        public void onResponse(JSONArray response) {
+            results.setText("Response:" + response.toString());
+        }
+    }, new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            System.out.println("oops something went wrong");
+        }
+    });
+     */
 
 
     @Override
@@ -110,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
 
                 String jsongarbage = stringBuilder.toString();
                 int index = jsongarbage.indexOf("main_species_id");
-                return jsongarbage.substring(index + 17, index + 23);
+                return jsongarbage;
 
                 //woohoo!! we get the mainID (sometimes) and now we can use that to do other cool stuff
                 // i should point out that trefle.io is kind of incomplete and there are a lot of null data points so I'm only going to try to pull the scientific name
@@ -128,17 +175,16 @@ public class MainActivity extends AppCompatActivity {
             }
             progressBar.setVisibility(View.GONE);
             Log.i("INFO", response);
-            /**
-             try {
-                JSONArray array = new JSONArray(response);
-                for (int i = 0; i < array.length(); i++) {
-                    JSONObject o = array.getJSONObject(i);
-                    mainSpeciesID = o.getInt("main_species_id");
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-             */
+             //try {
+             //   JSONArray array = new JSONArray(response);
+             //   for (int i = 0; i < array.length(); i++) {
+             //       JSONObject o = array.getJSONObject(i);
+             //       mainSpeciesID = o.getInt("main_species_id");
+             //    }
+            //} catch (JSONException e) {
+            //    e.printStackTrace();
+            //}
+
             results.setText(response);
         }
     }
