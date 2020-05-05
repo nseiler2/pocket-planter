@@ -92,7 +92,14 @@ public class MainActivity extends AppCompatActivity {
             }
             progressBar.setVisibility(View.GONE);
             Log.i("INFO", response);
-            results.setText(response);
+            int mainSpeciesID = 0;
+            try {
+                JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
+                mainSpeciesID = object.getInt("main_species_id");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            results.setText(mainSpeciesID);
         }
     }
 }
